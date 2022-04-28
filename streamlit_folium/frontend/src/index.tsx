@@ -63,12 +63,17 @@ function onRender(event: Event): void {
 
   function onLayerClick(e: any) {
     const global_data = __GLOBAL_DATA__;
-    global_data.last_object_clicked = e.latlng;
     if (e.layer && e.layer.toGeoJSON) {
       global_data.last_active_drawing = e.layer.toGeoJSON();
     }
     let details: Array<any> = global_data.drawnItems.toGeoJSON().features;
     global_data.all_drawings = details;
+    debouncedUpdateComponentValue()
+  }
+
+  function onObjectClick(e: any) {
+    const global_data = __GLOBAL_DATA__;
+    global_data.last_object_clicked = e.latlng;
     debouncedUpdateComponentValue()
   }
 
@@ -122,7 +127,7 @@ function onRender(event: Event): void {
         map.on('moveend', onMapMove);
         for (let key in map._layers) {
           let layer = map._layers[key];
-          layer.on("click", onLayerClick)
+          layer.on("click", onObjectClick)
         }
         map.on('draw:created', onDraw);
         map.on('draw:edited', onDraw);
